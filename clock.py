@@ -1,15 +1,17 @@
 import time
 import os
 import play_audio as pa
+import notification as nt
 
 class Clock:
     def __init__(self):
-        pass
+        last_timer = 0
 
     def set_timer(self, t):
         self._timer(t)
 
     def _timer(self, t):
+        last_timer = t
         while t:
             mins, secs = divmod(t, 60)
             self._print(mins, secs)
@@ -17,7 +19,9 @@ class Clock:
             t -= 1
         else:
             self._print(msg="Timer finished!")
-            pa.play("src/beep_my.wav")
+            if last_timer > 0:
+                nt.enviar_notificacao("Timer", f"Fim do Timer! {last_timer} segundos.")
+                pa.play("src/beep_my.wav")
             os.system('cls' if os.name == 'nt' else 'clear')
 
     def _set_print(self, mins, secs):
